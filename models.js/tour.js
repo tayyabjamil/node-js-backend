@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-
+const review = require('../models.js/reviews')
  var tourSchema = mongoose.Schema({
   
     name:{
@@ -23,12 +23,57 @@ const mongoose = require("mongoose")
         type:Date,
         default:Date.now()
     },
+    startLocation:{
+    type:{
+       type:String,
+       default:'Point',
+       enum:['Point']
+    },
+    coordinates:[Number],
+    address:String,
+    description:String
+    }
+    ,
+   //  locations:[{
 
-//     startCampaign:{
-//     type:mongoose.Schema.Types.ObjectId,
-//     ref:'startCampaign',
-//     required:true 
-// },
+   //    type:{
+   //       type:String,
+   //       default:'Point',
+   //       enum:['Point']
+   //    },
+   //    coordinates:[Number],
+   //    address:String,
+   //    description:String,
+   //    day:Number
+   //    }
+   //  ]
+locations:[
+   {
+     type:mongoose.Schema.ObjectId,
+     ref:'user' 
+   }
+],
+ratingAverage:{
+   type:Number,
+   default:0
+            },
+            ratingQuantity:{
+               type:Number,
+               default:0
+                        },
 
-})
-module.exports = mongoose.model('tour',tourSchema);
+});
+
+tourSchema.set('toObject', { virtuals: true });
+tourSchema.set('toJSON', { virtuals: true });
+
+
+tourSchema.virtual('reviews',{
+   ref:'review',
+   foreignField:'tour',
+   localField:'_id'
+});
+tourSchema.index({startLocation:'2dsphere'})
+
+const tour= mongoose.model('tour',tourSchema);
+module.exports  = tour;

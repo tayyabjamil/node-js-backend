@@ -1,6 +1,7 @@
 const { Query } = require('mongoose')
 const Tour = require('../models.js/tour')
-
+const mongoose = require("mongoose")
+const ObjectId = mongoose.Types.ObjectId;
 exports.getTourDetail = async(req,res)=>{
     try {
         const newTour = await Tour.findById(req.params.id)
@@ -120,21 +121,13 @@ excludedFields.forEach(el=> delete queryObj[el])
 }
 exports.getApiTours = async(req,res)=>{
     try {
-if(req.query.sort){
-    query = query.sort(req.query.sort)
-    console.log(query)
-}else{
- console.log('no sort')
-}
+const tours = await Tour.find()
+//     .populate({
+//         path:'reviews',
+       
+// }).select('-__v')
 
-if(req.query.fields){
-    query = query.select('place')
-}else{
-    console.log("no fields")
-}
-let tours = await query
-console.log(tours)
-res.status(200).json({
+res.status(201).json({
 
         tour:tours,
         length:tours.length
@@ -152,7 +145,7 @@ exports.getTourStats = async(req,res)=>{
     try {
         const stats = await  Tour.aggregate([
           { 
-               $match:{  group:{$gte:1}}
+               $match: { _id: new mongoose.Types.ObjectId('5f89d774da1e3228481bc1d5') }
         },{
                 $group:{
                     _id:'$members',
@@ -172,4 +165,32 @@ exports.getTourStats = async(req,res)=>{
             message:error
         })
     }
+}
+exports.toursWithin =async (req,res,next)=>{
+    //destructuring
+const {distance,latlng,unit} = req.params;
+const [lat,lng]=latlng.split(',')//array of two elements
+const radius = unit ==='mi' ? distance /3963.2 : distance /6378.1;
+if(!lat||!lng){
+    res.status(404).json({
+        message:'plese proveide latitude and longitude'
+    })
+}
+console.log(distance,lat,lng,unit)
+const tours = await Tour.find({
+    startLocation:{
+        $geoWithin:{
+            $centerSphere : [
+                [lng,lat],
+                radius
+            ]
+        }
+    }
+})
+res.status(201).json({
+status:"success",
+data:tours,
+results:tours.length
+})
+
 }
