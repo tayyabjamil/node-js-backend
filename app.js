@@ -1,8 +1,9 @@
 const express = require('express')
 const app = express()
 const rateLimit = require("express-rate-limit")
-
+const compression = require('compression')
 const morgan = require('morgan')
+app.use(compression())
 app.use(morgan('dev'))
 app.use(express.json())
 const mongoSanitize = require('express-mongo-sanitize')

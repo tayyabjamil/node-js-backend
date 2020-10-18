@@ -32,7 +32,7 @@ exports.postReviews = async(req,res)=>{
     try {
         const newReviews = await Reviews.create(req.body)
    const tourId = req.body.tour
-            console.log(tourId)
+            // console.log(tourId)
            const stats = await Reviews.aggregate([
                {
                   $match:{}
@@ -46,7 +46,7 @@ exports.postReviews = async(req,res)=>{
           }
           
          ])
-         console.log(stats)
+        //  console.log(stats)
          await Tour.findByIdAndUpdate(tourId,{
             ratingAverage:stats[0].ratingAverage,
             ratingQuantity:stats[0].ratingQuantity

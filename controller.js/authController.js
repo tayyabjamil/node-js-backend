@@ -68,7 +68,7 @@ try {
         };
         mg.messages().send(data, function (error, body) {
             if (error) {
-                console.log(error)
+                // console.log(error)
             } else {
                 res.status(201).json({
                     message: "email has been send kindly RESET your account"

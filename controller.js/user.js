@@ -103,7 +103,7 @@ exports.signUp = async (req, res) => {
         };
         mg.messages().send(data, function (error, body) {
             if (error) {
-                console.log(error)
+                // console.log(error)
             } else {
                 res.status(201).json({
                     message: "email has been send kindly activate your account"

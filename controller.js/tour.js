@@ -80,23 +80,23 @@ exports.deleteApiTours = async(req,res)=>{
 }
 exports.filterTour= async(req,res)=>{
     try {
-console.log(req.query)
+// console.log(req.query)
         const queryObj = { ...req.query};
-       console.log(queryObj)
+    //    console.log(queryObj)
        const excludedFields = ['sort','fields']
 excludedFields.forEach(el=> delete queryObj[el])
        let queryStr = JSON.stringify(queryObj)
         queryStr = queryStr.replace(/\b(gte|gt|lt|lte)\b/g,match => `$${match}`)
-        console.log(JSON.parse(queryStr))
+        // console.log(JSON.parse(queryStr))
         let query =  Tour.find(JSON.parse(queryStr))
         
-        console.log(query)
+        // console.log(query)
         
         if(req.query.sort){
             query = query.sort(req.query.sort)
-            console.log(query)
+            // console.log(query)
         }else{
-         console.log('no sort')
+        //  console.log('no sort')
         }
         if(req.query.fields){
             query = query.select(fields)
@@ -104,8 +104,8 @@ excludedFields.forEach(el=> delete queryObj[el])
             query.select('-__v')
         }
         const tours = await query
-        console.log(req.query)
-        console.log(tours)
+        // console.log(req.query)
+        // console.log(tours)
         res.status(201).json({
             status:'success',
             tour:tours
@@ -176,7 +176,7 @@ if(!lat||!lng){
         message:'plese proveide latitude and longitude'
     })
 }
-console.log(distance,lat,lng,unit)
+// console.log(distance,lat,lng,unit)
 const tours = await Tour.find({
     startLocation:{
         $geoWithin:{
